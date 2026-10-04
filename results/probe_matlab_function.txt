@@ -1,0 +1,8 @@
+ok       script set through MATLABFunctionConfiguration
+ok       parameter data P added
+ok       block output vs j2_accel, relative difference 4.54e-16
+ok       script set through MATLABFunctionConfiguration
+ok       parameter data P added
+ok       integrator loop vs ode113 after 600 s, position difference 1.164e-04 m
+
+Report written to C:\Users\USER\Desktop\smallsat-adcs\results\probe_matlab_function.txt

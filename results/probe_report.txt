@@ -1,0 +1,105 @@
+MATLAB 2025b
+
+Aerospace folders under toolbox:
+  C:\Program Files\MATLAB\R2025b\toolbox\aero
+  C:\Program Files\MATLAB\R2025b\toolbox\aeroblks
+
+Library files found:
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\aeroblks\aerolib3dof.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\aeroblks\aerolib3dof2.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\aeroblks\aerolib6dof.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\aeroblks\aerolib6dof2.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\aeroblks\aerolib6dofsys.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\aeroblks\aerolibactuator.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\aeroblks\aerolibadyn.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\aeroblks\aerolibadynsys.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\aeroblks\aerolibanim.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\aeroblks\aerolibanimutils.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\aeroblks\aerolibasang.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\aeroblks\aerolibasangsys.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\aeroblks\aerolibatmos.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\aeroblks\aerolibatmos2.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\aeroblks\aerolibatmossys.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\aeroblks\aerolibbdyn.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\aeroblks\aerolibcelestial.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\aeroblks\aerolibcommonsys.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\aeroblks\aerolibconvert.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\aeroblks\aerolibconvert2.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\aeroblks\aerolibeomforward.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\aeroblks\aerolibephsys.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\aeroblks\aerolibfltsims.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\aeroblks\aerolibfltsimssys.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\aeroblks\aerolibgravity.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\aeroblks\aerolibgravity2.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\aeroblks\aerolibgravitysys.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\aeroblks\aerolibguid.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\aeroblks\aerolibnav.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\aeroblks\aerolibnavsys.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\aeroblks\aerolibobsolete.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\aeroblks\aerolibpilot.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\aeroblks\aerolibpilotsys.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\aeroblks\aerolibprivatev1p5.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\aeroblks\aerolibpropulsion.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\aeroblks\aerolibpropulsion2.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\aeroblks\aerolibpropulsionsys.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\aeroblks\aerolibptmass.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\aeroblks\aerolibschedule.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\aeroblks\aerolibtransform.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\aeroblks\aerolibtransform2.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\aeroblks\aerolibtransform2sys.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\aeroblks\aerolibutil.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\aeroblks\aerolibv1.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\aeroblks\aerolibwind.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\aeroblks\aerolibwind2.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\aeroblks\aerolibwindfilters.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\hmi\aerolibhmi.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\sim3d\aerolibsim3d.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\sim3d\aerolibsim3dpack.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\spacecraftBlockLibraries\aerolibattitudesys.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\spacecraftBlockLibraries\aerolibcubesat.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\spacecraftBlockLibraries\aerolibcubesatveh.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\spacecraftBlockLibraries\aerolibsatdyn.slx
+  loaded   C:\Program Files\MATLAB\R2025b\toolbox\aeroblks\spacecraftBlockLibraries\asbCubeSatBlockLib.slx
+
+Blocks (searched by name in the loaded libraries):
+  found    Quaternion Multiplication -> aerolibutil/Quaternion
+Multiplication
+  found    Quaternion Normalize -> aerolib6dof/6DoF (Quaternion)/Quaternions to Euler Angles/Quaternion
+Normalize
+  found    Quaternion Conjugate -> aerolibutil/Quaternion
+Conjugate
+  found    Quaternion Rotation -> aerolibutil/Quaternion
+Rotation
+  MISSING  Quaternions to Direction Cosine Matrix
+  MISSING  Direction Cosine Matrix to Quaternions
+  found    Orbit Propagator -> aerolibcubesat/Spacecraft Dynamics/Orbit Propagator
+  found    Zonal Harmonic Gravity Model -> aerolibgravity2/Zonal Harmonic Gravity Model
+  found    Spherical Harmonic Gravity Model -> aerolibgravity2/Spherical Harmonic Gravity Model
+  found    World Magnetic Model -> aerolibgravity2/World Magnetic Model
+  found    COESA Atmosphere Model -> aerolibatmos/COESA Atmosphere Model
+  found    NRLMSISE-00 Atmosphere Model -> aerolibatmos2/NRLMSISE-00
+Atmosphere Model
+  found    Planetary Ephemeris -> aerolibcelestial/Planetary Ephemeris
+  found    Julian Date Conversion -> aerolibconvert2/Julian Date Conversion
+  found    6DOF (Quaternion) -> aerolib6dof2/6DOF (Quaternion)
+
+Functions:
+  found    igrfmagm
+  found    wrldmagm
+  found    atmosnrlmsise00
+  found    atmoscoesa
+  found    planetEphemeris
+  found    juliandate
+  found    quatmultiply
+  found    quatnormalize
+  found    quat2dcm
+  found    dcm2quat
+  found    quat2eul
+  found    eul2quat
+  found    eci2ecef
+  found    satelliteScenario
+
+Programmatic build check:
+  ok       MATLAB Function and Integrator blocks added
+
+Report written to C:\Users\USER\Desktop\smallsat-adcs\results\probe_report.txt

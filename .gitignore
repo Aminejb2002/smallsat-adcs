@@ -1,0 +1,9 @@
+slprj/
+*.slxc
+*.autosave
+*.asv
+*.mexw64
+*_grt_rtw/
+*_ert_rtw/
+codegen/
+results/tmp/

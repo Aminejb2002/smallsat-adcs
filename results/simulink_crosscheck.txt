@@ -1,0 +1,26 @@
+
+open loop: 581 samples over 5800 s, Simulink ode113 1e-10 vs MATLAB ode113 1e-12
+PASS  position         max difference 3.983e-05 m (limit 5e-02)
+PASS  velocity         max difference 4.267e-08 m/s (limit 1e-04)
+PASS  attitude         max difference 1.400e-08 rad (limit 1e-06)
+PASS  body rate        max difference 1.639e-11 rad/s (limit 1e-09)
+PASS  wheel momentum   max difference 0.000e+00 N m s (limit 1e-08)
+PASS  wheel torque     max difference 0.000e+00 N m (limit 1e-08)
+PASS  body field       max difference 4.544e-13 T (limit 1e-11)
+PASS  torquer dipole   max difference 0.000e+00 A m^2 (limit 1e-06)
+PASS  torque sources   max difference 3.953e-13 N m (limit 1e-10)
+PASS  quaternion norm  max difference 4.264e-10  (limit 1e-08)
+
+B-dot loop: 581 samples over 5800 s, Simulink ode113 1e-10 vs MATLAB ode113 1e-12
+PASS  position         max difference 5.013e-05 m (limit 5e-02)
+PASS  velocity         max difference 5.391e-08 m/s (limit 1e-04)
+PASS  attitude         max difference 2.521e-08 rad (limit 1e-06)
+PASS  body rate        max difference 2.478e-10 rad/s (limit 1e-09)
+PASS  wheel momentum   max difference 0.000e+00 N m s (limit 1e-08)
+PASS  wheel torque     max difference 0.000e+00 N m (limit 1e-08)
+PASS  body field       max difference 9.459e-13 T (limit 1e-11)
+PASS  torquer dipole   max difference 1.747e-07 A m^2 (limit 1e-06)
+PASS  torque sources   max difference 7.840e-13 N m (limit 1e-10)
+PASS  quaternion norm  max difference 6.459e-11  (limit 1e-08)
+
+20 of 20 checks passed
