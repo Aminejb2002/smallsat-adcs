@@ -82,7 +82,10 @@ end
 function tauW = wheel_torque(x, p, pointing)
 if pointing
     [qref, wref] = nadir_reference(x(1:3), x(4:6));
-    tauW = wheel_motor(-pointing_law(x(7:10), x(11:13), qref, wref, p), x(14:16), p);
+    w = x(11:13);
+    h = x(14:16);
+    cmd = -pointing_law(x(7:10), w, qref, wref, p) - cross(w, p.inertia*w + h);
+    tauW = wheel_motor(cmd, h, p);
 else
     tauW = zeros(3, 1);
 end
