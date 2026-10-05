@@ -23,7 +23,7 @@ bd = size_bdot(p);
 cleanup = onCleanup(@() evalin('base', 'clear adcsCase'));
 
 base = Simulink.SimulationInput(mdl);
-base = base.setBlockParameter([mdl '/Sensors/noise_gain'], 'Gain', '0');
+base = base.setBlockParameter([mdl '/Sensors/noise_gain_B'], 'Gain', '0');
 
 fails = 0;
 total = 0;

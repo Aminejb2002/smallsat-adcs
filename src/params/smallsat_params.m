@@ -38,4 +38,11 @@ p.wheelMomentumMax = 2.0;
 p.pointWn = 0.05;
 p.pointZeta = 0.9;
 p.slewRateMax = 1.0*pi/180;
+
+p.gyroStep = 0.1;
+p.gyroArw = 0.003*pi/180;
+p.gyroRrw = 1.0e-9;
+p.gyroBias0 = [1.0; -0.7; 0.5]*pi/180/3600;
+p.starStep = 1;
+p.starSigma = 10*pi/180/3600;
 end
