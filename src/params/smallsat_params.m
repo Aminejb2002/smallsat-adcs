@@ -1,6 +1,7 @@
 function p = smallsat_params
 % Parameters of the generic Earth-observation smallsat and the environment.
 % Spacecraft values are engineering assumptions, not data of a real satellite.
+% A struct paramOverride in the base workspace replaces fields, used by the experiment sweeps.
 
 p.mu = 3.986004418e14;
 p.Re = 6378.137e3;
@@ -35,8 +36,8 @@ p.bdotTauOrbits = 0.5;
 
 p.wheelTorqueMax = 0.05;
 p.wheelMomentumMax = 2.0;
-p.pointWn = 0.05;
-p.pointZeta = 0.9;
+p.pointWn = 0.15;
+p.pointZeta = 0.7;
 p.slewRateMax = 1.0*pi/180;
 
 p.gyroStep = 0.1;
@@ -48,4 +49,14 @@ p.starSigma = 10*pi/180/3600;
 p.starRateLimit = 2.0*pi/180;
 
 p.mekfBiasSigma0 = 1.0e-5;
+p.mekfAccelNoise = 1.0e-8;
+p.mekfTorqueRw = 2.0e-7;
+p.mekfTorqueSigma0 = 1.0e-4;
+
+if evalin('base', 'exist(''paramOverride'', ''var'')')
+    ov = evalin('base', 'paramOverride');
+    for f = fieldnames(ov)'
+        p.(f{1}) = ov.(f{1});
+    end
+end
 end
