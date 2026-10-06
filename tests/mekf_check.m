@@ -9,7 +9,7 @@ fails = 0;
 total = 0;
 
 const = @(t) [0.001; -0.0011; 0.0007];
-rec = simulate(p, 0, 600, [], false, zeros(3, 1), const);
+rec = simulate(p, 0, 600, [], false, zeros(3, 1), const, 0);
 v = max(vecnorm(rec.e, 2, 1));
 [fails, total] = report(fails, total, 'noise free attitude error', v, 1e-10, v < 1e-10);
 
@@ -36,7 +36,7 @@ rmsErr = zeros(nRuns, 1);
 bz = zeros(nRuns, 3);
 bErr = zeros(nRuns, 3);
 for s = 1:nRuns
-    rec = simulate(p, 100 + s - 1, 6000, [], true, p.gyroBias0, @truth_rate);
+    rec = simulate(p, 100 + s - 1, 6000, [], true, p.gyroBias0, @truth_rate, 0);
     sel = rec.t >= 600 & rec.newStar;
     idx = find(sel);
     ne = zeros(numel(idx), 1);
@@ -61,7 +61,7 @@ nOut = 4;
 inside = zeros(nOut, 1);
 worst = zeros(nOut, 1);
 for s = 1:nOut
-    rec = simulate(p, 200 + s - 1, 6000, [3000 3600], true, p.gyroBias0, @truth_rate);
+    rec = simulate(p, 200 + s - 1, 6000, [3000 3600], true, p.gyroBias0, @truth_rate, 0);
     idx = find(rec.t >= 3000 & rec.t < 3600);
     ok = false(numel(idx), 1);
     for k = 1:numel(idx)
@@ -72,6 +72,12 @@ for s = 1:nOut
 end
 v = mean(inside);
 [fails, total] = report(fails, total, 'outage: fraction inside 3 sigma', v, '> 0.97', v > 0.97);
+blind = 300;
+rec = simulate(p, 300, 4000, [], true, p.gyroBias0, @truth_rate, blind);
+late = rec.t >= blind + 600 & rec.newStar;
+v = sqrt(mean(sum(rec.e(:, late).^2, 1)/3))/p.starSigma;
+[fails, total] = report(fails, total, 'late start: rms / starSigma', v, '< 1', v < 1);
+[fails, total] = report(fails, total, 'late start: raw pass-through', rec.passthrough, 1e-15, rec.passthrough < 1e-15);
 fprintf('   worst outage attitude error / starSigma: %.2f\n', max(worst));
 fprintf('   NEES per run: %s\n   rms/starSigma per run: %s\n', mat2str(nees', 3), mat2str(rmsErr'/p.starSigma, 3));
 fprintf('\n%d of %d checks passed\n', total - fails, total);
@@ -99,7 +105,7 @@ slew = [0.3; 0; -0.2]*pi/180*(t >= 4500 && t < 4560);
 w = base + osc + slew;
 end
 
-function rec = simulate(p, seed, T, outage, noisy, bias, rate)
+function rec = simulate(p, seed, T, outage, noisy, bias, rate, blind)
 rng(seed);
 dt = p.gyroStep;
 n = round(T/dt) + 1;
@@ -112,6 +118,7 @@ rec.P3 = zeros(3, 3, n);
 rec.bErr = zeros(3, n);
 rec.Pb = zeros(3, 3, n);
 rec.newStar = false(1, n);
+rec.passthrough = 0;
 for k = 1:n
     t = (k - 1)*dt;
     w = rate(t);
@@ -126,10 +133,30 @@ for k = 1:n
     if ~isempty(outage) && t >= outage(1) && t < outage(2)
         new = false;
     end
-    if k == 1
+    if t < blind
+        new = false;
+    elseif k == 1
         new = true;
     end
     x = mekf_step(x, wm, qm, new, p);
+    if norm(x(1:4)) == 0
+        [qo, wo] = mekf_outputs(x, wm, qm);
+        rec.passthrough = max(rec.passthrough, max(norm(qo - qm), norm(wo - wm)));
+        rec.t(k) = t;
+        rec.e(:, k) = NaN;
+        rec.P3(:, :, k) = NaN;
+        rec.bErr(:, k) = NaN;
+        rec.Pb(:, :, k) = NaN;
+        rec.newStar(k) = new;
+        for j = 1:10
+            qt = quat_mul(qt, qexp(rate(t + (j - 0.5)*dt/10)*dt/10));
+            qt = qt/norm(qt);
+        end
+        if noisy
+            b = b + randn(3, 1)*p.gyroRrw*sqrt(dt);
+        end
+        continue
+    end
     d = quat_mul([x(1); -x(2:4)], qt);
     P = reshape(x(8:43), 6, 6);
     rec.t(k) = t;

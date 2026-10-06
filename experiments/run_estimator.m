@@ -39,33 +39,45 @@ for k = 1:n
     e(k, :) = 2*d(2:4)';
 end
 period = 2*pi*sqrt((p.Re + p.altitude)^3/p.mu);
-settled = t >= 600;
-last = t >= t(end) - period;
+active = sig(:, 1) > 0;
+tInit = t(find(active, 1));
+if isempty(tInit)
+    error('run_estimator:noFix', 'the filter never started: no valid star tracker fix in %.0f s', t(end));
+end
+iInit = find(active, 1);
+settled = active & t >= tInit + 600;
+last = active & t >= t(end) - period;
+e(~active, :) = NaN;
 arcsec = 180/pi*3600;
 rmsAll = sqrt(mean(sum(e(settled, :).^2, 2)/3));
 rmsLast = sqrt(mean(sum(e(last, :).^2, 2)/3));
 inside = mean(all(abs(e(settled, :)) < 3*sig(settled, :), 2));
 bErr = vecnorm(bTrue - bHat, 2, 2);
+bErr(~active) = NaN;
 
 out.t = t;
 out.err = e;
 out.sig = sig;
 out.bErr = bErr;
 
-fprintf('attitude error per axis, rms after 600 s: %.2f arcsec (star tracker alone %.1f arcsec)\n', ...
+fprintf('filter starts at %.0f s (first star fix, body rate %.2f deg/s, limit %.1f deg/s), statistics from %.0f s\n', ...
+    tInit, norm(w(iInit, :))*180/pi, p.starRateLimit*180/pi, tInit + 600);
+fprintf('attitude error per axis, rms after settling: %.2f arcsec (star tracker alone %.1f arcsec)\n', ...
     rmsAll*arcsec, p.starSigma*arcsec);
 fprintf('attitude error per axis, rms in the last orbit: %.2f arcsec\n', rmsLast*arcsec);
 fprintf('samples inside the filter 3 sigma bound: %.1f %%\n', 100*inside);
-fprintf('largest error after 600 s: %.1f arcsec (during rates up to %.2f deg/s)\n', ...
+fprintf('largest error after settling: %.1f arcsec (during rates up to %.2f deg/s)\n', ...
     max(vecnorm(e(settled, :), 2, 2))*arcsec, max(vecnorm(w(settled, :), 2, 2))*180/pi);
-fprintf('bias error: start %.2e rad/s, end %.2e rad/s, true bias norm %.2e rad/s\n', ...
-    bErr(1), bErr(end), norm(bTrue(end, :)));
+fprintf('bias error: at start of filter %.2e rad/s, end %.2e rad/s, true bias norm %.2e rad/s\n', ...
+    bErr(iInit), bErr(end), norm(bTrue(end, :)));
 
 fig = figure('Name', 'Estimator run', 'Position', [100 100 900 800]);
 subplot(3, 1, 1);
-semilogy(t/period, max(vecnorm(e, 2, 2)*arcsec, 1e-2), 'LineWidth', 1.0);
+sigPlot = sig;
+sigPlot(~active, :) = NaN;
+semilogy(t/period, vecnorm(e, 2, 2)*arcsec, 'LineWidth', 1.0);
 hold on;
-semilogy(t/period, vecnorm(sig, 2, 2)*arcsec*3, '--', 'LineWidth', 1.0);
+semilogy(t/period, vecnorm(sigPlot, 2, 2)*arcsec*3, '--', 'LineWidth', 1.0);
 grid on;
 ylabel('attitude error [arcsec]');
 legend('error norm', '3 sigma bound (norm)', 'Location', 'best');

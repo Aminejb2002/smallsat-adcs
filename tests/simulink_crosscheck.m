@@ -24,6 +24,9 @@ cleanup = onCleanup(@() evalin('base', 'clear adcsCase'));
 
 base = Simulink.SimulationInput(mdl);
 base = base.setBlockParameter([mdl '/Sensors/noise_gain_B'], 'Gain', '0');
+if getSimulinkBlockHandle([mdl '/use_estimate']) > 0
+    base = base.setBlockParameter([mdl '/use_estimate'], 'Value', '0');
+end
 
 fails = 0;
 total = 0;

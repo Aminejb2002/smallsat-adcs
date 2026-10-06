@@ -2,9 +2,11 @@ function x = mekf_step(x, wMeas, qMeas, newStar, p)
 % One gyro step of the multiplicative EKF, plus the star tracker update when newStar is nonzero.
 % State x = [qHat(4); bHat(3); P(36)], error state [dtheta; db] with dtheta in the body frame
 % (q = qHat (x) [1; dtheta/2]) and db = b - bHat. The filter starts itself from the first star
-% tracker sample when x(1:4) is zero.
+% tracker fix (newStar nonzero) after the state was zero, and stays at zero until then.
 if norm(x(1:4)) == 0
-    x = mekf_init(qMeas, p);
+    if newStar ~= 0
+        x = mekf_init(qMeas, p);
+    end
     return
 end
 dt = p.gyroStep;

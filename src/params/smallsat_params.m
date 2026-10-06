@@ -45,6 +45,7 @@ p.gyroRrw = 1.0e-9;
 p.gyroBias0 = [1.0; -0.7; 0.5]*pi/180/3600;
 p.starStep = 1;
 p.starSigma = 10*pi/180/3600;
+p.starRateLimit = 2.0*pi/180;
 
 p.mekfBiasSigma0 = 1.0e-5;
 end
