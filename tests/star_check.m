@@ -23,12 +23,13 @@ for k = 1:n
     if d(1) < 0, d = -d; end
     e(k, :) = 2*d(2:4)';
 end
+sigmaAx = sqrt(diag(star_covariance(p)))';
 sigma = p.starSigma;
 
 checks = {
     'measured quaternion norm',        max(abs(vecnorm(qm, 2, 2) - 1)),                1e-9
-    'error mean',                      max(abs(mean(e, 1)))/(sigma/sqrt(n)),            4
-    'error std vs starSigma',          max(abs(std(e, 0, 1)/sigma - 1)),                0.05
+    'error mean',                      max(abs(mean(e, 1))./(sigmaAx/sqrt(n))),            4
+    'error std vs star covariance',    max(abs(std(e, 0, 1)./sigmaAx - 1)),                0.05
     'axes uncorrelated',               max(abs(corrcoef_offdiag(e))),                   4/sqrt(n)
     };
 fails = 0;

@@ -22,11 +22,12 @@ b = x(8:10);
 d = x(11:13);
 P = reshape(x(14:157), 12, 12);
 
+accelModel = inertia\(-tauW - cross(w, inertia*w + h));
 wNew = w + dt*(inertia\(d - tauW - cross(w, inertia*w + h)));
 wBar = 0.5*(w + wNew);
 q = quat_mul(q, rotvec_to_quat(wBar*dt));
 q = q/norm(q);
-[Phi, Qd] = mekf_discretize(mekf_jacobian(wBar, h, inertia), mekf_process_noise(p), dt);
+[Phi, Qd] = mekf_discretize(mekf_jacobian(wBar, h, inertia), mekf_process_noise(p, accelModel), dt);
 P = Phi*P*Phi' + Qd;
 w = wNew;
 
@@ -38,7 +39,7 @@ if newStar ~= 0
         e = -e;
     end
     Hs = [eye(3), zeros(3, 9)];
-    [q, w, b, d, P] = kalman_update(q, w, b, d, P, Hs, p.starSigma^2*eye(3), 2*e(2:4));
+    [q, w, b, d, P] = kalman_update(q, w, b, d, P, Hs, star_covariance(p), 2*e(2:4));
 end
 P = 0.5*(P + P');
 x = [q; w; b; d; P(:)];

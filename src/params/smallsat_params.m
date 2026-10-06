@@ -46,12 +46,16 @@ p.gyroRrw = 1.0e-9;
 p.gyroBias0 = [1.0; -0.7; 0.5]*pi/180/3600;
 p.starStep = 1;
 p.starSigma = 10*pi/180/3600;
+p.starBoresight = [0; 0; 1];      % tracker boresight in the body frame (assumption: body z)
+p.starBoresightRatio = 5;        % noise about the boresight / noise across it (typical 5-10, assumption)
 p.starRateLimit = 2.0*pi/180;
 
 p.mekfBiasSigma0 = 1.0e-5;
 p.mekfAccelNoise = 1.0e-8;
 p.mekfTorqueRw = 2.0e-7;
 p.mekfTorqueSigma0 = 1.0e-4;
+p.mekfModelError = 0.15;
+p.mekfModelCorrTime = 30;
 
 if evalin('base', 'exist(''paramOverride'', ''var'')')
     ov = evalin('base', 'paramOverride');
