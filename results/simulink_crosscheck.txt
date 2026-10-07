@@ -47,4 +47,16 @@ PASS  torquer dipole   max difference 9.005e-09 A m^2 (limit 1e-06)
 PASS  torque sources   max difference 6.413e-15 N m (limit 1e-10)
 PASS  quaternion norm  max difference 9.631e-13  (limit 1e-08)
 
-40 of 40 checks passed
+wheel pointing, plant inertia differs from controller: 151 samples over 1500 s, Simulink ode113 1e-10 vs MATLAB ode113 1e-12
+PASS  position         max difference 7.350e-05 m (limit 5e-02)
+PASS  velocity         max difference 1.460e-07 m/s (limit 1e-04)
+PASS  attitude         max difference 8.593e-12 rad (limit 1e-06)
+PASS  body rate        max difference 5.823e-13 rad/s (limit 1e-09)
+PASS  wheel momentum   max difference 1.592e-11 N m s (limit 1e-08)
+PASS  wheel torque     max difference 4.497e-12 N m (limit 1e-08)
+PASS  body field       max difference 1.280e-15 T (limit 1e-11)
+PASS  torquer dipole   max difference 0.000e+00 A m^2 (limit 1e-06)
+PASS  torque sources   max difference 4.363e-16 N m (limit 1e-10)
+PASS  quaternion norm  max difference 5.704e-13  (limit 1e-08)
+
+50 of 50 checks passed

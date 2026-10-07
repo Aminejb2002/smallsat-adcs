@@ -14,6 +14,7 @@ p.epochDays = days(datetime(2026, 3, 20, 12, 0, 0) - datetime(2000, 1, 1, 12, 0,
 
 p.mass = 150;
 p.inertia = [26.0 0.6 -0.4; 0.6 24.0 0.5; -0.4 0.5 16.0];
+p.inertiaTruth = p.inertia;   % inertia of the real body (plant); controller and filter use p.inertia. Differ via paramOverride to study model error
 p.altitude = 600e3;
 
 p.srpArea = 2.4;

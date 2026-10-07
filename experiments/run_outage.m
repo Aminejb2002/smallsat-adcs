@@ -1,12 +1,12 @@
 function res = run_outage(durations)
 % Star tracker outage in the closed loop (estimate feeds the controller): the filter keeps
 % propagating on the gyro and its torque model while no star fixes arrive. The outage starts at
-% 12000 s, well after capture, and lasts each of the given durations in seconds (0 = none).
+% 14000 s, and lasts each of the given durations in seconds (0 = none).
 % Needs the outage_window blocks in the Estimator (see the instructions in the project notes).
 % Reports the true knowledge error against the filter's own 3-sigma bound, and the pointing
 % error during and after the outage. Logged every 10 s.
 if nargin < 1, durations = [0 300 900 1800]; end
-tStart = 12000;
+tStart = 14000;
 p0 = smallsat_params;
 arc = 180/pi*3600;
 mdl = 'smallsat_adcs';
@@ -15,8 +15,8 @@ assignin('base', 'adcsCase', 'tumble');
 cleanup = onCleanup(@() evalin('base', 'clear adcsCase paramOverride'));
 res = struct('duration', num2cell(durations));
 fprintf('%8s | %-34s | %-26s | %-24s\n', '', 'knowledge error in the outage', 'filter 3 sigma', 'pointing error [deg]');
-fprintf('%8s | %10s %10s %10s | %12s %12s | %11s %11s\n', 'outage', 'rms', 'max', 'inside 3s', 'at end', 'before', 'max during', 'max after');
-fprintf('%8s | %10s %10s %10s | %12s %12s | %11s %11s\n', '[s]', '[arcsec]', '[arcsec]', '[%]', '[arcsec]', '[arcsec]', '', '+600 s');
+fprintf('%8s | %10s %10s %10s | %12s %12s | %11s %11s %11s %9s\n', 'outage', 'rms', 'max', 'inside 3s', 'at end', 'before', 'max before', 'max during', 'max after', 'recovery');
+fprintf('%8s | %10s %10s %10s | %12s %12s | %11s %11s %11s %9s\n', '[s]', '[arcsec]', '[arcsec]', '[%]', '[arcsec]', '[arcsec]', '-600 s', '', '+600 s', 'to <0.03');
 for c = 1:numel(durations)
     dur = durations(c);
     if dur == 0, st = 1e9; else, st = tStart; end
@@ -47,16 +47,19 @@ for c = 1:numel(durations)
     inside = mean(all(abs(e(win, :)) < 3*sig(win, :), 2))*100;
     eN = vecnorm(e, 2, 2)*arc;
     sN = vecnorm(sig, 2, 2)*3*arc;
-    iEnd = find(t >= tStart + dur, 1);
-    res(c).rms = sqrt(mean(sum(e(win, :).^2, 2)/3))*arc;
+    iEnd = find(t >= tStart + dur, 1) - 1;   % last logged sample inside the outage, before the first star update
+    res(c).rms = sqrt(mean(sum(e(win, :).^2, 2)))*arc;   % total angle, same definition as run_monte_carlo
     res(c).max = max(eN(win));
     res(c).inside = inside;
     res(c).sig3End = sN(iEnd);
     res(c).sig3Before = mean(sN(before));
+    late = find(t >= tStart + dur & pt >= 0.03, 1, 'last');
+    if isempty(late), res(c).recover = 0; else, res(c).recover = t(late) + 10 - (tStart + dur); end
+    res(c).pointMaxBefore = max(pt(before));
     res(c).pointMaxDuring = max(pt(win));
     res(c).pointMaxAfter = max(pt(after));
-    fprintf('%8.0f | %10.1f %10.1f %10.1f | %12.1f %12.1f | %11.4f %11.4f\n', dur, res(c).rms, res(c).max, ...
-        inside, res(c).sig3End, res(c).sig3Before, res(c).pointMaxDuring, res(c).pointMaxAfter);
+    fprintf('%8.0f | %10.1f %10.1f %10.1f | %12.1f %12.1f | %11.4f %11.4f %11.4f %9.0f\n', dur, res(c).rms, res(c).max, ...
+        inside, res(c).sig3End, res(c).sig3Before, res(c).pointMaxBefore, res(c).pointMaxDuring, res(c).pointMaxAfter, res(c).recover);
 end
 if ~wasLoaded, close_system(mdl, 0); end
 end

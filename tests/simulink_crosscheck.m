@@ -69,6 +69,16 @@ if withPointing
     else
         emit(fid, '\n(no Controller/dump_block in the model, dumping case skipped)');
     end
+    % plant inertia differs from the one the controller and filter use (checks Plant/ang_acc uses P.inertiaTruth)
+    D = diag(sqrt([1.10 0.92 1.07]));
+    assignin('base', 'paramOverride', struct('dumpGain', 0, 'inertiaTruth', D*p.inertia*D));
+    duration = 1500;
+    in = base.setModelParameter('StopTime', num2str(duration));
+    [f, n] = compare_case(sim(in), reference_run(duration, logStep, 1e-12, ic, ...
+        struct('pointing', true)), 'wheel pointing, plant inertia differs from controller', fid);
+    fails = fails + f;
+    total = total + n;
+    evalin('base', 'clear paramOverride');
 end
 
 emit(fid, '\n%d of %d checks passed', total - fails, total);

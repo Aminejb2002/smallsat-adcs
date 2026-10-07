@@ -99,6 +99,6 @@ function dx = rhs(t, x, p, m, pointing)
 tauDist = disturbance_block(t, x(1:3), x(4:6), x(7:10), p);
 tauMt = cross(m, body_field(t, x, p));
 tauW = wheel_torque(x, p, pointing);
-wd = angular_accel(x(11:13), x(14:16), tauDist + tauMt, tauW, p.inertia);
+wd = angular_accel(x(11:13), x(14:16), tauDist + tauMt, tauW, p.inertiaTruth);
 dx = [x(4:6); j2_accel(x(1:3), p); quat_rate(x(7:10), x(11:13)); wd; tauW];
 end

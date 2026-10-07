@@ -18,6 +18,7 @@ the simulation in this repository, under the assumptions listed in the README.
 | R8 | Estimator covariance consistent with its error (NEES between 1 and 6) under inertia, torque and drag errors | Analysis, Monte Carlo of the filter alone | `mekf_check`, `run_estimator_robustness` | NEES 2.4 to 3.6 for single errors; not met with unmodelled torque noise (13) or a spun-up body | partial |
 | R9 | Simulink model agrees with the independent plain-MATLAB reference within stated limits | Test | `simulink_crosscheck(true)` | 40 of 40 checks | pass |
 | R10 | Magnetic momentum dumping law produces the intended torque and never raises wheel momentum | Test | `dump_check` | 6 of 6 checks | pass |
+| R11 | Star tracker outage up to 1800 s: the filter's 3-sigma bound contains the true attitude error in at least 95 % of samples, and pointing is back under 0.03 deg within 60 s after the fixes return | Simulation, estimate in the loop | `run_outage` | inside 3-sigma 100 % for 300, 900 and 1800 s; filter 1-sigma growth within 7 % of the gyro angle-random-walk hand calculation; recovery within 20 s (10 s log). Pointing during the outage is not held: 0.074 deg at 300 s, 0.18 deg at 1800 s | pass (one seed per duration) |
 
 ## Notes on the Monte Carlo
 
@@ -29,6 +30,15 @@ the simulation in this repository, under the assumptions listed in the README.
   that window is not fully settled. The three-run rerun to 24 000 s shows the wheel momentum settles
   to about 0.013 N m s.
 
+## Notes on the outage run
+
+- Outage tolerance is set by the gyro angle random walk (0.003 deg/sqrt(s)): the error per axis grows as
+  0.003 deg x sqrt(T). To keep 0.03 deg at 1 sigma per axis the outage can last about 100 s; for 0.03 deg
+  in total angle about 33 s. The pointing requirement R3 therefore does not hold during an outage and
+  is not claimed to.
+- A first run of `run_outage` gave identical rows because the second Step block had the wrong step time
+  (gate never closed). The table above comes from the corrected model.
+
 ## Known gaps
 
 - The Monte Carlo varies tip-off rate, initial attitude, gyro bias and noise seeds. It does not
@@ -38,3 +48,4 @@ the simulation in this repository, under the assumptions listed in the README.
 - All wheels, sensors and disturbances are idealised: no wheel jitter or friction model, no
   flexible modes, no tracker latency, bias or blinding, white gyro noise only.
 - Logged peaks are sampled every 10 s.
+- The outage run uses one noise seed per duration and one start time (14 000 s) in the default tumble case.
