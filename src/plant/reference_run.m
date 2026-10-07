@@ -1,7 +1,8 @@
 function ref = reference_run(duration, step, tol, ic, ctrl)
 % Plain-MATLAB propagation of orbit, attitude and reaction wheels, the golden check for the
 % Simulink model. ctrl fields (all optional): gain and mMax for the sampled B-dot loop,
-% pointing = true for the wheel pointing law (continuous, ideal state feedback).
+% pointing = true for the wheel pointing law (continuous, ideal state feedback) together with the
+% magnetic momentum dumping when p.dumpGain > 0.
 % Noise-free magnetometer; the commanded dipole is held between sensor samples.
 p = smallsat_params;
 if nargin < 4 || isempty(ic)
@@ -43,6 +44,9 @@ for k = 0:nStep
     Bk = body_field(tk, x, p);
     m = -ctrl.gain*(Bk - Bprev)/Ts;
     m = min(max(m, -ctrl.mMax), ctrl.mMax);
+    if ctrl.pointing && p.dumpGain > 0
+        m = dump_law(Bk, x(14:16), p);   % wheel momentum dumping, sampled with the field
+    end
     Bprev = Bk;
     if mod(k, every) == 0
         row = row + 1;

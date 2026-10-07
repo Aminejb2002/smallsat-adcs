@@ -35,4 +35,16 @@ PASS  torquer dipole   max difference 0.000e+00 A m^2 (limit 1e-06)
 PASS  torque sources   max difference 4.445e-16 N m (limit 1e-10)
 PASS  quaternion norm  max difference 6.830e-13  (limit 1e-08)
 
-30 of 30 checks passed
+wheel pointing with momentum dumping: 301 samples over 3000 s, Simulink ode113 1e-10 vs MATLAB ode113 1e-12
+PASS  position         max difference 4.951e-04 m (limit 5e-02)
+PASS  velocity         max difference 5.478e-07 m/s (limit 1e-04)
+PASS  attitude         max difference 2.836e-10 rad (limit 1e-06)
+PASS  body rate        max difference 1.726e-11 rad/s (limit 1e-09)
+PASS  wheel momentum   max difference 4.448e-10 N m s (limit 1e-08)
+PASS  wheel torque     max difference 9.696e-11 N m (limit 1e-08)
+PASS  body field       max difference 5.202e-15 T (limit 1e-11)
+PASS  torquer dipole   max difference 9.005e-09 A m^2 (limit 1e-06)
+PASS  torque sources   max difference 6.413e-15 N m (limit 1e-10)
+PASS  quaternion norm  max difference 9.631e-13  (limit 1e-08)
+
+40 of 40 checks passed

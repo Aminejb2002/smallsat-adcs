@@ -20,7 +20,8 @@ wasLoaded = bdIsLoaded(mdl);
 p = smallsat_params;
 logStep = 10;
 bd = size_bdot(p);
-cleanup = onCleanup(@() evalin('base', 'clear adcsCase'));
+cleanup = onCleanup(@() evalin('base', 'clear adcsCase paramOverride'));
+hasDump = getSimulinkBlockHandle([mdl '/Controller/dump_block']) > 0;
 
 base = Simulink.SimulationInput(mdl);
 base = base.setBlockParameter([mdl '/Sensors/noise_gain_B'], 'Gain', '0');
@@ -52,10 +53,22 @@ if withPointing
     ic = initial_state_case(p, 'point');
     duration = 1500;
     in = base.setModelParameter('StopTime', num2str(duration));
+    assignin('base', 'paramOverride', struct('dumpGain', 0));
     [f, n] = compare_case(sim(in), reference_run(duration, logStep, 1e-12, ic, ...
         struct('pointing', true)), 'wheel pointing', fid);
     fails = fails + f;
     total = total + n;
+    if hasDump
+        evalin('base', 'clear paramOverride');
+        duration = 3000;
+        in = base.setModelParameter('StopTime', num2str(duration));
+        [f, n] = compare_case(sim(in), reference_run(duration, logStep, 1e-12, ic, ...
+            struct('pointing', true)), 'wheel pointing with momentum dumping', fid);
+        fails = fails + f;
+        total = total + n;
+    else
+        emit(fid, '\n(no Controller/dump_block in the model, dumping case skipped)');
+    end
 end
 
 emit(fid, '\n%d of %d checks passed', total - fails, total);

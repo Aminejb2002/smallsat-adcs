@@ -1,7 +1,9 @@
-function out = run_mission
-% First end-to-end run: tip-off tumble, B-dot detumble, handover, wheel capture of nadir
-% pointing, three orbits, noisy magnetometer. Truth state feeds the controller (no estimator yet).
+function out = run_mission(useEstimate)
+% End-to-end run: tip-off tumble, B-dot detumble, handover, wheel capture of nadir pointing with
+% magnetic momentum dumping, three orbits, noisy magnetometer. run_mission(true) (default) closes
+% the loop on the estimate, run_mission(false) feeds the controller the true state.
 % Quantities are sampled every 10 s, so peaks between samples are not seen.
+if nargin < 1, useEstimate = true; end
 root = fileparts(fileparts(mfilename('fullpath')));
 p = smallsat_params;
 bd = size_bdot(p);
@@ -9,7 +11,11 @@ pt = size_pointing(p);
 mdl = 'smallsat_adcs';
 wasLoaded = bdIsLoaded(mdl);
 assignin('base', 'adcsCase', 'tumble');
-simOut = sim(mdl);
+in = Simulink.SimulationInput(mdl);
+if getSimulinkBlockHandle([mdl '/use_estimate']) > 0
+    in = in.setBlockParameter([mdl '/use_estimate'], 'Value', num2str(double(useEstimate)));
+end
+simOut = sim(in);
 evalin('base', 'clear adcsCase');
 if ~wasLoaded
     close_system(mdl, 0);
@@ -45,7 +51,10 @@ else
     tCapture = t(bad + 1);
 end
 tail = t >= t(end) - 2000;
-torquersOff = all(all(m(t >= tEngage + 10, :) == 0));
+mAfter = m(t >= tEngage + 10, :);
+mPeak = max(abs(mAfter(:)));
+lastOrbit = t >= t(end) - period;
+hLast = vecnorm(h(lastOrbit, :), 2, 2);
 engagedRows = t >= tEngage;
 satFraction = mean(any(abs(tauW(engagedRows, :)) >= p.wheelTorqueMax - 1e-9, 2));
 
@@ -63,7 +72,8 @@ fprintf('%-38s %12.0f %12.0f\n', 'B-dot time to handover rate [s]', bd.tDetumble
 fprintf('%-38s %12.0f %12.0f\n', 'wheel capture, start to 0.1 deg [s]', pt.tCapture, tCapture - tEngage);
 fprintf('%-38s %12.2f %12.2f\n', 'peak wheel momentum [N m s]', pt.hSlew, out.hPeak);
 fprintf('(hand capture time is the 180 deg worst case; hand momentum is the slew-rate-limit value)\n');
-fprintf('torquers silent after handover: %s\n', yesno(torquersOff));
+fprintf('momentum dumping: peak dipole after handover %.2f A m^2 (limit %.0f), wheel momentum over the last orbit mean %.3f max %.3f N m s\n', ...
+    mPeak, p.mtqMax, mean(hLast), max(hLast));
 fprintf('wheel torque at its limit in %.1f %% of samples after handover\n', 100*satFraction);
 fprintf('pointing error over the last %.0f s: mean %.4f deg, max %.4f deg\n', 2000, ...
     mean(errDeg(tail)), max(errDeg(tail)));
@@ -78,7 +88,7 @@ yline(p.detumbleTarget*180/pi, '--');
 yline(p.detumbleExit*180/pi, ':');
 grid on;
 ylabel('|\omega| [deg/s]');
-title('Detumble, handover and pointing');
+title(sprintf('Detumble, handover and pointing (estimate in loop: %s)', yesno(useEstimate)));
 subplot(3, 1, 2);
 semilogy(t/period, max(errDeg, 1e-4), 'LineWidth', 1.2);
 hold on;

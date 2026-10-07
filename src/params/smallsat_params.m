@@ -33,6 +33,7 @@ p.tipOffRate = [3; -2; 4]*pi/180;
 p.detumbleTarget = 0.5*pi/180;
 p.detumbleExit = 2.0*pi/180;
 p.bdotTauOrbits = 0.5;
+p.dumpGain = 1/900;              % wheel momentum dumping gain, 1/s (900 s time constant, see run_dumping)
 
 p.wheelTorqueMax = 0.05;
 p.wheelMomentumMax = 2.0;
