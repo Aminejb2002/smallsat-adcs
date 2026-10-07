@@ -51,6 +51,8 @@ p.starSigma = 10*pi/180/3600;
 p.starBoresight = [0; 0; 1];      % tracker boresight in the body frame (assumption: body z)
 p.starBoresightRatio = 5;        % noise about the boresight / noise across it (typical 5-10, assumption)
 p.starRateLimit = 2.0*pi/180;
+p.outageStart = 1e9;             % star tracker outage window start, s (never by default)
+p.outageDuration = 600;          % outage duration, s
 
 p.mekfBiasSigma0 = 1.0e-5;
 p.mekfAccelNoise = 1.0e-8;

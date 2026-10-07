@@ -1,12 +1,15 @@
-function res = run_monte_carlo(nRuns)
+function res = run_monte_carlo(nRuns, stopTime, only)
 % Monte Carlo of the full mission (tumble, B-dot detumble, handover, wheel capture, pointing with
 % magnetic momentum dumping) with the estimate in the loop. Per run: random tip-off rate (3 to
 % 6 deg/s, random direction), random initial attitude, random initial gyro bias (+-1.5 deg/h per
 % axis) and new noise seeds for magnetometer, gyro, gyro bias drift and star tracker.
 % Not varied: inertia, actuator and sensor error models (the model has one P.inertia for plant and
 % filter), disturbance size. Draws use rng(2026), so the table is reproducible.
+% Optional: stopTime (s) overrides the model stop time, only = run numbers to simulate.
 % Statistics over the last 2000 s of each run. Logged every 10 s, so peaks between samples are not seen.
 if nargin < 1, nRuns = 20; end
+if nargin < 2, stopTime = []; end   % [] keeps the model's stop time
+if nargin < 3, only = 1:nRuns; end  % all draws are made anyway, so run i is the same case as in a full run
 root = fileparts(fileparts(mfilename('fullpath')));
 p0 = smallsat_params;
 period = 2*pi*sqrt((p0.Re + p0.altitude)^3/p0.mu);
@@ -26,9 +29,11 @@ for i = 1:nRuns
     rate = (3 + 3*rand)*pi/180;
     qi = randn(4, 1); qi = qi/norm(qi);
     bias = (2*rand(3, 1) - 1)*1.5*pi/180/3600;
+    if ~ismember(i, only), continue; end
     assignin('base', 'paramOverride', struct('tipOffRate', rate*d, 'initialQuat', qi, 'gyroBias0', bias));
     in = Simulink.SimulationInput(mdl);
     in = in.setBlockParameter([mdl '/use_estimate'], 'Value', '1');
+    if ~isempty(stopTime), in = in.setModelParameter('StopTime', num2str(stopTime)); end
     for b = 1:size(seedBlocks, 1)
         in = in.setBlockParameter([mdl '/Sensors/' seedBlocks{b, 1}], 'Seed', mat2str(seedBlocks{b, 2} + 1000*i));
     end
@@ -40,6 +45,7 @@ for i = 1:nRuns
     fprintf('%4d %8.2f %9.0f %9.0f %9.4f %9.4f %9.1f %9.3f %9.1f\n', i, m.tipOff, m.handover, m.capture, ...
         m.pointMean, m.pointMax, m.knowRms, m.hMax, m.dipoleMax);
 end
+res = res(only);
 ok = [res.handover] > 0 & ~isnan([res.capture]);
 fprintf('\n%d of %d runs reached pointing (handover and capture inside the run)\n', sum(ok), nRuns);
 f = {'handover', 'capture', 'pointMean', 'pointMax', 'knowRms', 'hMax', 'dipoleMax'};
@@ -50,7 +56,8 @@ for k = 1:numel(f)
 end
 outDir = fullfile(root, 'results');
 if ~exist(outDir, 'dir'), mkdir(outDir); end
-save(fullfile(outDir, 'monte_carlo.mat'), 'res');
+if isempty(stopTime) && numel(only) == nRuns, name = 'monte_carlo.mat'; else, name = 'monte_carlo_rerun.mat'; end
+save(fullfile(outDir, name), 'res');
 if ~wasLoaded, close_system(mdl, 0); end
 end
 
