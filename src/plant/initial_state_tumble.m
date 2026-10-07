@@ -3,6 +3,6 @@ function ic = initial_state_tumble(p)
 base = initial_state(p, 0);
 ic.r = base.r;
 ic.v = base.v;
-ic.q = [0.5; 0.5; -0.5; 0.5];
+ic.q = p.initialQuat(:)/norm(p.initialQuat);
 ic.w = p.tipOffRate(:);
 end

@@ -30,6 +30,7 @@ p.sensorStep = 1;
 p.magSigma = 1e-7;
 p.mtqMax = 30;
 p.tipOffRate = [3; -2; 4]*pi/180;
+p.initialQuat = [0.5; 0.5; -0.5; 0.5];   % attitude after separation, inertial to body
 p.detumbleTarget = 0.5*pi/180;
 p.detumbleExit = 2.0*pi/180;
 p.bdotTauOrbits = 0.5;
