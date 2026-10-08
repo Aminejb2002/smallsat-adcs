@@ -7,3 +7,5 @@ slprj/
 *_ert_rtw/
 codegen/
 results/tmp/
+results/replay/*.csv
+results/replay/*.mp4
