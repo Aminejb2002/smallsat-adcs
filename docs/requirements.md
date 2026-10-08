@@ -16,7 +16,7 @@ the simulation in this repository, under the assumptions listed in the README. T
 | R6 | Wheel torque at its limit in at most 1 % of samples after handover | Simulation | `run_mission` | 0.1 % | pass |
 | R7 | Torquer dipole within the 30 A m^2 limit at all times | Simulation | `run_monte_carlo` | worst 28.6 A m^2 after handover, margin 5 % (21.2 with plant inertia error; logged every 10 s) | pass, thin margin |
 | R8 | Estimator covariance consistent with its error (NEES between 1 and 6) under inertia, torque and drag errors | Analysis, Monte Carlo of the filter alone | `mekf_check`, `run_estimator_robustness` | NEES 2.4 to 3.6 for single errors; 2.4 mean in the closed-loop Monte Carlo with 10 % plant inertia error; not met with unmodelled torque noise (13) or a spun-up body | partial |
-| R9 | Simulink model agrees with the independent plain-MATLAB reference within stated limits | Test | `simulink_crosscheck(true)` | 40 of 40 checks | pass |
+| R9 | Simulink model agrees with the independent plain-MATLAB reference within stated limits | Test | `simulink_crosscheck(true)` | 50 of 50 checks | pass |
 | R10 | Magnetic momentum dumping law produces the intended torque and never raises wheel momentum | Test | `dump_check` | 6 of 6 checks | pass |
 | R11 | Star tracker outage up to 1800 s: the filter's 3-sigma bound contains the true attitude error in at least 95 % of samples, and pointing is back under 0.03 deg within 60 s after the fixes return | Simulation, estimate in the loop | `run_outage` | inside 3-sigma 100 % for 300, 900 and 1800 s; filter 1-sigma growth within 7 % of the gyro angle-random-walk hand calculation; recovery within 20 s (10 s log). Pointing during the outage is not held: 0.074 deg at 300 s, 0.18 deg at 1800 s | pass (one seed per duration) |
 
@@ -59,5 +59,12 @@ the simulation in this repository, under the assumptions listed in the README. T
   consistency when a constant torque spins the body to about 1 deg/s without a controller.
 - All wheels, sensors and disturbances are idealised: no wheel jitter or friction model, no
   flexible modes, no tracker latency, bias or blinding, white gyro noise only.
-- Logged peaks are sampled every 10 s.
+- Logged peaks are sampled every 10 s, except in the mission replay run (0.5 s). There the dipole peak after
+  handover is 18.7 A m^2 (18.6 at 10 s sampling).
+- The slew-rate limit in the pointing law is applied per axis (each component of the commanded rate is limited
+  to 1 deg/s), not to the vector norm. A slew about a diagonal axis therefore reaches up to sqrt(3) x 1 deg/s;
+  the mission run peaks at 1.49 deg/s relative to the reference, then settles to the 1 deg/s plateau.
+- Capture overshoots: the rate loop lags the commanded rate, so the error falls to about 0.3 deg, rises to about
+  0.7 deg and settles below 0.1 deg about 20 s later (mission replay run, 0.5 s logs). One run only; overshoot is
+  not part of the requirements and is not in the Monte Carlo statistics.
 - The outage run uses one noise seed per duration and one start time (14 000 s) in the default tumble case.
