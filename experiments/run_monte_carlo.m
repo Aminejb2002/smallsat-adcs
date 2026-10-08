@@ -26,16 +26,16 @@ seedBlocks = {sprintf('Random\nNumber'), [41 42 43]; sprintf('Random\nNumber1'),
               sprintf('Random\nNumber2'), [61 62 63]; 'noise', [11 22 33]};
 arc = 180/pi*3600;
 res = struct('run', num2cell(1:nRuns));
-fprintf('%4s %8s %9s %9s %9s %9s %9s %9s %9s\n', 'run', 'tip-off', 'handover', 'capture', 'point', 'point', 'knowledge', 'h last', 'dipole');
-fprintf('%4s %8s %9s %9s %9s %9s %9s %9s %9s\n', '', '[deg/s]', '[s]', '[s]', 'mean[deg]', 'max[deg]', 'rms[arcs]', 'max[Nms]', 'max[Am2]');
+fprintf('%4s %8s %9s %9s %9s %9s %9s %9s %9s %7s %7s\n', 'run', 'tip-off', 'handover', 'capture', 'point', 'point', 'knowledge', 'h last', 'dipole', 'NEES', 'dI');
+fprintf('%4s %8s %9s %9s %9s %9s %9s %9s %9s %7s %7s\n', '', '[deg/s]', '[s]', '[s]', 'mean[deg]', 'max[deg]', 'rms[arcs]', 'max[Nms]', 'max[Am2]', 'mean', 'max[%]');
 for i = 1:nRuns
     d = randn(3, 1); d = d/norm(d);
     rate = (3 + 3*rand)*pi/180;
     qi = randn(4, 1); qi = qi/norm(qi);
     bias = (2*rand(3, 1) - 1)*1.5*pi/180/3600;
+    eI = (2*rand(rsI, 3, 1) - 1)*inertiaSpread;   % drawn for every run, also the skipped ones
     if ~ismember(i, only), continue; end
     ov = struct('tipOffRate', rate*d, 'initialQuat', qi, 'gyroBias0', bias);
-    eI = (2*rand(rsI, 3, 1) - 1)*inertiaSpread;
     if inertiaSpread > 0
         D = diag(sqrt(1 + eI));
         ov.inertiaTruth = D*p0.inertia*D;

@@ -2,7 +2,8 @@ function res = run_outage(durations)
 % Star tracker outage in the closed loop (estimate feeds the controller): the filter keeps
 % propagating on the gyro and its torque model while no star fixes arrive. The outage starts at
 % 14000 s, and lasts each of the given durations in seconds (0 = none).
-% Needs the outage_window blocks in the Estimator (see the instructions in the project notes).
+% Needs the outage_on / outage_off Step blocks and the outage_valid gate in the Estimator; the gate is driven by
+% P.outageStart and P.outageDuration (paramOverride).
 % Reports the true knowledge error against the filter's own 3-sigma bound, and the pointing
 % error during and after the outage. Logged every 10 s.
 if nargin < 1, durations = [0 300 900 1800]; end

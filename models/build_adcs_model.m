@@ -3,7 +3,9 @@ function build_adcs_model(logStep, force)
 % Plant (orbit, attitude, three reaction wheels, disturbances), magnetometer, guidance and
 % actuators are built here. The Controller subsystem holds the B-dot loop and placeholders for
 % the pointing law and the mode switch, which are built by hand in Simulink.
-% Refuses to overwrite an existing model unless force is true.
+% Refuses to overwrite an existing model unless force is true. This only documents how the first
+% scaffold was made: the model in the repository was extended by hand afterwards (controller, estimator,
+% sensors, logging, masks) and no longer matches what this script generates.
 if nargin < 1
     logStep = 10;
 end
