@@ -82,6 +82,7 @@ models/          Simulink model (smallsat_adcs.slx) and the script that built it
 src/             params, dynamics, environment, plant, control laws, estimator
 tests/           cross-checks and unit checks
 experiments/     mission, Monte Carlo, outage and estimator studies
+analysis/        disturbance torque budget over one orbit with hand-estimate bounds
 visualization/   replay export, video renderer, globe intro
 docs/            requirements and verification table, model screenshots
 results/         saved Monte Carlo data and the latest cross-check output
