@@ -17,6 +17,7 @@ if ~exist(fullfile(root, 'models', [mdl '.slx']), 'file')
     error('simulink_crosscheck:nomodel', 'models/%s.slx not found, run build_adcs_model(10, true) first', mdl);
 end
 wasLoaded = bdIsLoaded(mdl);
+load_system(mdl);   % the block lookups below need the model loaded
 p = smallsat_params;
 logStep = 10;
 bd = size_bdot(p);
