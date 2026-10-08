@@ -12,7 +12,7 @@ Simulink model of the attitude determination and control of a generic 150 kg Ear
 |---|---|---|
 | Detumble | Tip-off of up to 6°/s removed with magnetorquers only | B-dot, `m = -k dB/dt`, gain hand-sized from the orbit-averaged field |
 | Capture and pointing | Reaction wheels slew to nadir and hold it | PD on the error quaternion with a slew-rate limit (ωn 0.15 rad/s, ζ 0.7) |
-| Momentum dumping | Torquers unload the wheels | `m = B × τ / |B|²` with `τ = -kh·h` |
+| Momentum dumping | Torquers unload the wheels | `m = B × τ / ‖B‖²` with `τ = -kh·h` |
 | Estimation | Attitude, rate, gyro bias and disturbance torque from gyro, star tracker and magnetometer | 12-state rate-aided multiplicative EKF |
 
 The plant includes J2, gravity gradient, solar radiation pressure, drag and a residual dipole. Spacecraft values (inertia, areas, wheel and torquer limits) are my own assumptions for a generic satellite, not data of a real mission. They are listed in `src/params/smallsat_params.m`.
