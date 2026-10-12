@@ -59,6 +59,7 @@ I report these on purpose. Details are in [`docs/requirements.md`](docs/requirem
 - **The estimator is overconfident with unmodelled white torque noise,** and loses consistency when a constant torque spins the body to about 1°/s without a controller (requirement R8 is only partly met).
 - **Torquer margin is thin** (28.6 of 30 A·m² worst case).
 - **Idealisations:** no wheel jitter or friction, no flexible modes, no tracker latency, bias or blinding, white gyro noise only. The Monte Carlo does not vary centre of mass, actuator error or disturbance size.
+- **Magnetometer–torquer interference is not modelled.** The magnetometer sees the true field plus noise, and the torquers stay on while it samples. A real bus needs separate sensing and actuation windows with a settling time, which costs torque and would slow detumble.
 - Orbit and environment are simplified (J2, exponential atmosphere, dipole field); this is not a mission-analysis tool.
 
 ## Run it
