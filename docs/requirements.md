@@ -49,6 +49,40 @@ the simulation in this repository, under the assumptions listed in the README. T
   0.56 N m s in the last-orbit window of the 17 400 s run). Rerun to 24 000 s with the same inertia draws
   (runs 9, 24, 27): 0.013 to 0.014 N m s.
 
+## Notes on magnetorquer interference with the magnetometer
+
+`experiments/run_detumble_interference.m` is a plain-MATLAB B-dot detumble (same orbit, disturbances and
+sampled loop as `reference_run`, noisy magnetometer) with two additions: the torquer field leaks into the
+magnetometer, `B_meas = B + c m` (same axis, assumed coupling c in T per A m^2), and an optional sensing /
+actuation cycle (torquers off, field read at the end of the off window, new dipole held for the rest of the
+cycle). It is not the Simulink model. The 30 tip-off and attitude draws are those of `run_monte_carlo`; the
+magnetometer noise seeds differ. Detumble requirement as in R1 (below 0.5 deg/s within 11 600 s), run length
+12 600 s.
+
+| Case | Result |
+|---|---|
+| No leakage, torquers always on (baseline) | 28 of 30 pass, mean 8310 s; runs 24 and 27 miss (12 109 s, 12 375 s). Simulink Monte Carlo: 12 120 s and 12 380 s, mean 8315 s |
+| Leakage c = 1e-7, always on (runs 24 and 27 only) | no detumble; dipole pinned at 30 A m^2, rate 4.5 to 4.6 deg/s after 12 600 s |
+| Cycle 10 s, 2 s off, gain unchanged, no leakage | 17 of 30 pass |
+| Cycle 4 s, 1 s off, gain x4/3, field settled in the off window | 28 of 30 pass, same two misses (12 186 s, 12 470 s); finished runs 85 s slower on average |
+| Same, leakage c = 1e-6, settling time constant 0.5 s | 28 of 30 pass; run 27 does not finish in 12 600 s; finished runs about 140 s slower than with instant settling |
+| Same, time constant 0.55 s (run 3, 24, 27 only) | run 3 passes (6840 s), 24 and 27 miss as before |
+| Same, time constant 0.65 s (run 3, 24, 27 only) | all three fail (1.1 to 1.7 deg/s after 12 600 s) |
+| Same, time constant 1 s | fails; stopped after 14 runs, none detumbled, dipole pinned at 30 A m^2 |
+
+- Continuous sampling with leakage is unstable once the loop gain `k c / T_s` exceeds about 0.5 (a recursion
+  `m_n = -g (m_(n-1) - m_(n-2))` with `g = k c / T_s`; B-dot gain k = 8.3e6 A m^2 s/T, so c above about
+  6e-8 T per A m^2). That corresponds roughly to a 30 A m^2 torquer within about 1.3 m of the sensor.
+- With windows the same recursion has `g = k c exp(-t_off / tau) / T_cycle`; the runs above agree with the
+  threshold g = 0.5 (tau about 0.58 s for c = 1e-6, 1 s off, 4 s cycle). This is a rule from a simplified
+  model, not a proof.
+- The settling constant tau, the coupling c (same axis, instantaneous) and the cycle are assumptions. The runs
+  with tau above 0.5 s and the 1 s run are a few runs or partial runs, not full 30-run sets.
+- The cycle length matters: a 10 s cycle loses much more than the duty cycle alone explains, probably because
+  the body turns about 50 deg between readings at 5 deg/s (not isolated from the gain change).
+- Runs 24 and 27 miss with and without windows; windows (instant settling) move them by 77 and 95 s and do not turn other
+  passes into misses at 4 s / 1 s.
+
 ## Known gaps
 
 - The Monte Carlo varies tip-off rate, initial attitude, gyro bias and noise seeds. A second set of
@@ -68,3 +102,4 @@ the simulation in this repository, under the assumptions listed in the README. T
   0.7 deg and settles below 0.1 deg about 20 s later (mission replay run, 0.5 s logs). One run only; overshoot is
   not part of the requirements and is not in the Monte Carlo statistics.
 - The outage run uses one noise seed per duration and one start time (14 000 s) in the default tumble case.
+- Magnetometer-torquer interference and sensing windows are studied only in the plain-MATLAB loop above, not in the Simulink model, and not during pointing or momentum dumping.
