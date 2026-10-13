@@ -55,7 +55,7 @@ the simulation in this repository, under the assumptions listed in the README. T
 sampled loop as `reference_run`, noisy magnetometer) with two additions: the torquer field leaks into the
 magnetometer, `B_meas = B + c m` (same axis, assumed coupling c in T per A m^2), and an optional sensing /
 actuation cycle (torquers off, field read at the end of the off window, new dipole held for the rest of the
-cycle). It is not the Simulink model. The 30 tip-off and attitude draws are those of `run_monte_carlo`; the
+cycle). It is not the Simulink model; a Simulink copy of the model with the same additions is described below. The 30 tip-off and attitude draws are those of `run_monte_carlo`; the
 magnetometer noise seeds differ. Detumble requirement as in R1 (below 0.5 deg/s within 11 600 s), run length
 12 600 s.
 
@@ -69,6 +69,23 @@ magnetometer noise seeds differ. Detumble requirement as in R1 (below 0.5 deg/s 
 | Same, time constant 0.55 s (run 3, 24, 27 only) | run 3 passes (6840 s), 24 and 27 miss as before |
 | Same, time constant 0.65 s (run 3, 24, 27 only) | all three fail (1.1 to 1.7 deg/s after 12 600 s) |
 | Same, time constant 1 s | fails; stopped after 14 runs, none detumbled, dipole pinned at 30 A m^2 |
+
+**Simulink copy.** `models/build_interference_model.m` builds `smallsat_adcs_interference.slx` as a copy of the
+model (the original file is only read): the B-dot path is replaced by the MATLAB Function block `bdot_cycle`
+(`src/control/bdot_cycle.m`, cycle, off window and leakage), and a new Sensors input adds the coupling times the
+leaking dipole to the magnetometer sample, through a one-sample delay. Defaults leave the model unchanged.
+`experiments/run_detumble_interference_sim.m` runs the same cases in it.
+
+| Check | Result |
+|---|---|
+| `bdot_cycle_check` (block logic against the plain loop, 6 cycle / leakage cases) | agree to 1e-14 A m^2 |
+| `interference_model_check` (copy with default parameters against the original, 1200 s, tumble case) | identical: zero difference in dipole, body rate, magnetometer sample and attitude |
+| Baseline, runs 24 and 27 | 12 120 s and 12 380 s, the same as the Monte Carlo |
+| 4 s cycle, 1 s off, gain x4/3, c = 1e-6, tau = 0.5 s, runs 3 / 24 / 27 | 6860 s, 12 310 s, no finish (0.514 deg/s at 12 600 s); plain loop: 6852 s, 12 311 s, no finish (0.514 deg/s) |
+
+Only these three windowed runs were repeated in Simulink, not the full 30. In the Simulink copy the cycle and the
+leakage act only on the B-dot phase, not on momentum dumping or pointing. Detumble time there is the hand-over to
+the wheels, as in `run_monte_carlo`.
 
 - Continuous sampling with leakage is unstable once the loop gain `k c / T_s` exceeds about 0.5 (a recursion
   `m_n = -g (m_(n-1) - m_(n-2))` with `g = k c / T_s`; B-dot gain k = 8.3e6 A m^2 s/T, so c above about
@@ -102,4 +119,4 @@ magnetometer noise seeds differ. Detumble requirement as in R1 (below 0.5 deg/s 
   0.7 deg and settles below 0.1 deg about 20 s later (mission replay run, 0.5 s logs). One run only; overshoot is
   not part of the requirements and is not in the Monte Carlo statistics.
 - The outage run uses one noise seed per duration and one start time (14 000 s) in the default tumble case.
-- Magnetometer-torquer interference and sensing windows are studied only in the plain-MATLAB loop above, not in the Simulink model, and not during pointing or momentum dumping.
+- Magnetometer-torquer interference and sensing windows: full 30-run sets only in the plain-MATLAB loop; three runs repeated in the Simulink copy (not the original model); not during pointing or momentum dumping.

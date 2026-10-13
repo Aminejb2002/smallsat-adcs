@@ -59,7 +59,7 @@ I report these on purpose. Details are in [`docs/requirements.md`](docs/requirem
 - **The estimator is overconfident with unmodelled white torque noise,** and loses consistency when a constant torque spins the body to about 1°/s without a controller (requirement R8 is only partly met).
 - **Torquer margin is thin** (28.6 of 30 A·m² worst case).
 - **Idealisations:** no wheel jitter or friction, no flexible modes, no tracker latency, bias or blinding, white gyro noise only. The Monte Carlo does not vary centre of mass, actuator error or disturbance size.
-- **Magnetorquer interference with the magnetometer is studied only in a plain-MATLAB detumble loop, not in the Simulink model.** With the torquers on while the magnetometer samples, even a modest coupling makes B-dot unstable; a 4 s cycle with 1 s off removes it at little cost (28 of 30, same two misses) as long as the field settles within about half a second. Coupling and settling time are assumptions. Details in [`docs/requirements.md`](docs/requirements.md).
+- **Magnetorquer interference with the magnetometer is studied in a plain-MATLAB detumble loop (30 runs) and checked on three runs in a Simulink copy of the model.** With the torquers on while the magnetometer samples, even a modest coupling makes B-dot unstable; a 4 s cycle with 1 s off removes it at little cost (28 of 30, same two misses) as long as the field settles within about half a second. Coupling and settling time are assumptions, and the cycle acts only on the B-dot phase. Details in [`docs/requirements.md`](docs/requirements.md).
 - Orbit and environment are simplified (J2, exponential atmosphere, dipole field); this is not a mission-analysis tool.
 
 ## Run it
@@ -72,7 +72,7 @@ simulink_crosscheck(true)        % 50 checks, a few minutes
 run_mission                      % full three-orbit run, estimate in the loop
 ```
 
-Other experiments are in `experiments/` (`run_monte_carlo`, `run_outage`, `run_estimator_robustness`, `run_pointing_sweep`, `run_detumble_interference`).
+Other experiments are in `experiments/` (`run_monte_carlo`, `run_outage`, `run_estimator_robustness`, `run_pointing_sweep`, `run_detumble_interference`, `run_detumble_interference_sim`). The interference copy of the model is generated with `build_interference_model` (not stored in the repository).
 
 The replay videos are rendered from logged data: `export_replay_data` writes the CSVs, `python visualization/render_replay.py mission` (needs Python 3, numpy, scipy, matplotlib and ffmpeg) turns them into video. `globe_intro` opens the orbit on a 3D globe and needs the Aerospace Toolbox and Satellite Communications Toolbox.
 

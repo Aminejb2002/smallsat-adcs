@@ -9,3 +9,4 @@ codegen/
 results/tmp/
 results/replay/*.csv
 results/replay/*.mp4
+models/smallsat_adcs_interference.slx
